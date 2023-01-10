@@ -8,11 +8,6 @@ const config = {
     database:'docker_nginx_challenge_db'
 };
 const mysql = require('mysql');
-const connection = mysql.createConnection(config)
-
-const sql = `INSERT INTO people(name) values('Test Name')`
-connection.query(sql)
-connection.end()
 
 const doQuery = (sql) => {
   return new Promise((resolve, reject) => {
@@ -26,11 +21,22 @@ const doQuery = (sql) => {
   })
 }
 
+const insertRandomName = async () => {
+  const randomName = Math.random().toString(36).substring(2,7) + ' ' + Math.random().toString(36).substring(2,7)
+  const sql = `INSERT INTO people(name) values('${randomName}')`
+  await doQuery(sql);
+}
+
+insertRandomName()
+    .then(result => console.log('Random name inserted!'))
+    .catch(error => console.error('Error to insert random name'))
+
 app.get('/', async (req, res) => {
     try {
+      insertRandomName();
       const result = await doQuery("SELECT * FROM people");
       const names = result.map(v => v.name).reduce((prev, curr) => `${prev} <li>${curr}</li>`, '')
-      res.send(`<h1>Node App with MySQL</h1><ul>${names}</ul>`)
+      res.send(`<h1>Full Cycle Rocks!</h1><ul>${names}</ul>`)
     } catch (error) {
       res.json(error)
     }

@@ -6,14 +6,11 @@ services:
       context: node-app
     container_name: docker-challenge-node-app
     entrypoint: dockerize -wait tcp://docker-challenge-db:3306 -timeout 20s npm start
-    # entrypoint: dockerize -wait tcp://docker-challenge-db:3306 -timeout 20s npm run start:dev
     networks:
       - node-nginx-network
     volumes:
       - ./node-app:/usr/src/app
     tty: true
-    ports:
-      - "3000:3000"
     depends_on:
       - docker-challenge-db
 
@@ -30,6 +27,16 @@ services:
       - MYSQL_DATABASE=docker_nginx_challenge_db
       - MYSQL_ROOT_PASSWORD=root
     networks: 
+      - node-nginx-network
+
+  docker-challenge-nginx:
+    restart: always
+    build:
+        context: nginx
+    ports:
+        - "8080:80"
+    tty: true
+    networks:
       - node-nginx-network
 
 networks:
