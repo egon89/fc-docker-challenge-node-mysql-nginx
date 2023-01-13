@@ -10,6 +10,7 @@ services:
       - node-nginx-network
     volumes:
       - ./node-app:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
     tty: true
     depends_on:
       - docker-challenge-db
@@ -42,3 +43,6 @@ services:
 networks:
   node-nginx-network:
     driver: bridge
+
+volumes:
+  node_modules:
